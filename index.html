@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PACS Membership Data Entry</title>
+    <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <h1>PACS COMPUTERIZATION PROJECT</h1>
+  <p>Membership डेटा एंट्री टेम्पलेट</p>
+</div>
+
+<div class="meta-bar">
+  <div>जिला: <span>रोहतास</span></div>
+  <div>प्रखण्ड: <span>नोखा</span></div>
+  <div>पैक्स: <span>नोख नगर पंचायत</span></div>
+</div>
+
+<div class="form-card">
+
+  <div class="form-grid">
+
+    <div class="field">
+      <label>क्र0 सं0 (Serial No.)</label>
+      <input type="text" id="sr" class="sr-field" readonly placeholder="Auto" />
+    </div>
+
+    <div class="field">
+      <label>सदस्य का नाम *</label>
+      <input type="text" id="naam" placeholder="पूरा नाम लिखें" />
+    </div>
+
+    <div class="field">
+      <label>पिता / पति का नाम *</label>
+      <input type="text" id="pita" placeholder="पिता/पति का नाम" />
+    </div>
+
+    <div class="field">
+      <label>पता</label>
+      <input type="text" id="pata" placeholder="गांव / मोहल्ला" />
+    </div>
+
+    <div class="field">
+      <label>सदस्य / सहसदस्य</label>
+      <select id="sadasy">
+        <option value="">-- चुनें --</option>
+        <option>सदस्य</option>
+        <option>सहसदस्य</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>आधार कार्ड संख्या</label>
+      <input type="text" id="aadhar" placeholder="12 अंक" maxlength="12" />
+    </div>
+
+    <div class="field">
+      <label>जन्म तिथि</label>
+      <input type="date" id="dob" />
+    </div>
+
+    <div class="field">
+      <label>आयु</label>
+      <input type="number" id="aayu" placeholder="वर्ष" min="1" max="120" />
+    </div>
+
+    <div class="field">
+      <label>लिंग</label>
+      <select id="ling">
+        <option value="">-- चुनें --</option>
+        <option>पुरुष</option>
+        <option>महिला</option>
+        <option>अन्य</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>वैवाहिक स्थिति</label>
+      <select id="vivah">
+        <option value="">-- चुनें --</option>
+        <option>विवाहित</option>
+        <option>अविवाहित</option>
+        <option>विधवा/विधुर</option>
+        <option>तलाकशुदा</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>धर्म</label>
+      <select id="dharm">
+        <option value="">-- चुनें --</option>
+        <option>हिन्दू</option>
+        <option>मुस्लिम</option>
+        <option>सिख</option>
+        <option>ईसाई</option>
+        <option>बौद्ध</option>
+        <option>जैन</option>
+        <option>अन्य</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>जाति</label>
+      <input type="text" id="jaati" placeholder="जाति लिखें" />
+    </div>
+
+    <div class="field">
+      <label>DCCB बचत खाता संख्या</label>
+      <input type="text" id="dccb" placeholder="खाता संख्या" />
+    </div>
+
+    <div class="field">
+      <label>ईमेल आईडी</label>
+      <input type="email" id="email" placeholder="email@example.com" />
+    </div>
+
+    <div class="field">
+      <label>मोबाईल नम्बर</label>
+      <input type="tel" id="mobile" placeholder="10 अंक" maxlength="10" />
+    </div>
+
+    <div class="field">
+      <label>नॉमिनी</label>
+      <input type="text" id="nominee" placeholder="नॉमिनी का नाम" />
+    </div>
+
+  </div>
+
+  <div class="btn-row">
+  <button class="btn-add" onclick="addEntry()">➕ एंट्री जोड़ें</button>
+
+  <button class="btn-export" onclick="exportExcel()">
+    📥 Excel में Export करें
+  </button>
+
+  <button class="btn-pdf" onclick="exportPDF()">
+    📄 PDF में Export करें
+  </button>
+
+  <button class="btn-clear" onclick="clearAll()">
+    🗑️ सब हटाएं
+  </button>
+</div>  
+
+</div>
+
+<!-- TABLE -->
+<div class="table-section">
+  <h2>दर्ज सदस्य <span class="count-badge" id="count">0</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>क्र0 सं0</th>
+          <th>सदस्य का नाम</th>
+          <th>पिता/पति का नाम</th>
+          <th>पता</th>
+          <th>सदस्य/सहसदस्य</th>
+          <th>आधार संख्या</th>
+          <th>जन्म तिथि</th>
+          <th>आयु</th>
+          <th>लिंग</th>
+          <th>वैवाहिक स्थिति</th>
+          <th>धर्म</th>
+          <th>जाति</th>
+          <th>DCCB खाता</th>
+          <th>ईमेल</th>
+          <th>मोबाईल</th>
+          <th>नॉमिनी</th>
+          <th>हटाएं</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
